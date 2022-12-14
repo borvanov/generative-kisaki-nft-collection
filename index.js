@@ -182,6 +182,9 @@ function generateNft() {
       .map((path) => `./input/${path}`)
   ).then((canvas) => {
     const buffer = canvas.toBuffer("image/png");
+    if (!fs.existsSync("./generated")) {
+      fs.mkdirSync("./generated");
+    }
     fs.writeFileSync(`./generated/${Date.now()}.png`, buffer);
   });
 }
