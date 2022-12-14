@@ -11,10 +11,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "canvas": "^2.10.2",
-    "multi-layers-image": "^0.0.2"
-  },
-  "devDependencies": {
-    "regenerator-runtime": "^0.13.11"
+    "canvas": "^2.10.2"
   }
 }
