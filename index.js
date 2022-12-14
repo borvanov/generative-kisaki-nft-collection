@@ -16,6 +16,7 @@ import {
 import { Sequence } from "./utilities/sequence.js";
 import { Image } from "./utilities/image.js";
 import { Random } from "./utilities/random.js";
+import { Exclusions } from "./utilities/exclusions.js";
 
 const LAYERS = {
   Background: "background",
@@ -32,9 +33,7 @@ const LAYERS = {
 };
 
 function generateNft() {
-  const excludedAccessories = [];
-  const excludedHandAccessories = [];
-  let handAccessoriesSkipped = false;
+  const exclusions = new Exclusions();
 
   const colorType = Random.generateRandomIntegerInRange(1, 5);
   const colorName = getColorByNumber(colorType);
@@ -51,6 +50,7 @@ function generateNft() {
     LAYERS.Clothing,
     LAYERS.Accessory,
     LAYERS.Hand,
+    LAYERS.HandAccessory,
   ]);
 
   const backgroundType =
@@ -73,7 +73,7 @@ function generateNft() {
   layers[LAYERS.Mouth] = mouthMap.getFilePath(mouthType, colorName);
   // Revalidate mouth type
   if ([3, 7, 8].includes(mouthType)) {
-    excludedAccessories.push(2);
+    exclusions.push(LAYERS.Accessory, [2]);
   }
   // Revalidate mouth type -- end
 
@@ -81,16 +81,16 @@ function generateNft() {
   layers[LAYERS.Hair] = hairMap.getFilePath(hairType, colorName);
   // Revalidate hair type
   if (![2, 3, 6, 8].includes(hairType)) {
-    excludedAccessories.push(3, 12);
+    exclusions.push(LAYERS.Accessory, [3, 12]);
   }
   if (![2, 6].includes(hairType)) {
-    excludedAccessories.push(7);
+    exclusions.push(LAYERS.Accessory, [7]);
   }
   if (hairType === 5) {
-    excludedAccessories.push(4, 8, 9);
+    exclusions.push(LAYERS.Accessory, [4, 8, 9]);
   }
   if (hairType === 4) {
-    excludedAccessories.push(8);
+    exclusions.push(LAYERS.Accessory, [8]);
   }
   // Revalidate hair type -- end
 
@@ -98,10 +98,10 @@ function generateNft() {
   layers[LAYERS.Clothing] = clothingsMap.getFilePath(clothingType, colorName);
   // Revalidate clothing type
   if ([3, 4].includes(clothingType)) {
-    excludedAccessories.push(10, 12);
+    exclusions.push(LAYERS.Accessory, [10, 12]);
   }
   if (clothingType === 5) {
-    excludedAccessories.push(3, 4, 5, 6, 8, 9, 12);
+    exclusions.push(LAYERS.Accessory, [3, 4, 5, 6, 8, 9, 12]);
     layersSequence.moveAfter(LAYERS.Hair, LAYERS.Clothing);
     layers[LAYERS.Hair] = hoodedCapeHairMap.getFilePath(hairType, colorName);
   }
@@ -109,7 +109,7 @@ function generateNft() {
 
   const accessoryType = Random.generateRandomFromConfigurationMap(
     accessoriesMap,
-    excludedAccessories
+    exclusions.getByKey(LAYERS.Accessory)
   );
   layers[LAYERS.Accessory] = accessoriesMap.getFilePath(
     accessoryType,
@@ -119,42 +119,61 @@ function generateNft() {
   if (accessoryType === 12) {
     layersSequence.moveAfter(LAYERS.Accessory, LAYERS.Hair);
   }
+  if (accessoryType === 1) {
+    // QUESTION: the only available hand type in this case is 7 or NONE
+    layersSequence.removeFromSequence(LAYERS.HandAccessory);
+    exclusions.push(LAYERS.Hand, [1, 2, 3, 4, 5, 6]);
+    // layersSequence.removeFromSequence(LAYERS.Hand);
+  }
+  if (accessoryType === 5) {
+    if (hairType !== 2) {
+      layersSequence.moveAfter(LAYERS.Accessory, LAYERS.Mouth);
+    }
+  }
+  if (accessoryType === 2) {
+    exclusions.push(LAYERS.Hand, [1, 7]);
+  }
   // Revalidate accessory type -- end
 
-  const handType = Random.generateRandomFromConfigurationMap(handsMap);
+  const handType = Random.generateRandomFromConfigurationMap(
+    handsMap,
+    exclusions.getByKey(LAYERS.Hand)
+  );
   layers[LAYERS.Hand] = handsMap.getFilePath(handType, colorName);
   if (handType === 8) {
     layersSequence.removeFromSequence(LAYERS.Hand);
   }
   // Revalidate hand type
+  if (handType === 7) {
+    layersSequence.moveAfter(LAYERS.Hand, LAYERS.Clothing);
+  }
   if ([7, 8].includes(handType)) {
-    excludedHandAccessories.push(4, 5, 6, 7, 8, 9);
+    exclusions.push(LAYERS.HandAccessory, [4, 5, 6, 7, 8, 9]);
   }
   if ([3, 5].includes(handType)) {
-    excludedHandAccessories.push(1, 2, 3, 4, 5, 6, 7, 8, 10);
+    exclusions.push(LAYERS.HandAccessory, [1, 2, 3, 4, 5, 6, 7, 8, 10]);
   }
   if (handType === 4) {
-    excludedHandAccessories.push(1, 2, 3, 10);
+    exclusions.push(LAYERS.HandAccessory, [1, 2, 3, 10]);
   }
   if ([1, 2, 6].includes(handType) || accessoryType === 1) {
-    handAccessoriesSkipped = true;
+    layersSequence.removeFromSequence(LAYERS.HandAccessory);
   }
   // Revalidate hand type -- end
 
-  if (!handAccessoriesSkipped) {
+  if (layersSequence.sequence.includes(LAYERS.HandAccessory)) {
     const handAccessoryType = Random.generateRandomFromConfigurationMap(
       handAccessoryMap,
-      excludedHandAccessories
+      exclusions.getByKey(LAYERS.HandAccessory)
     );
     layers[LAYERS.HandAccessory] = handAccessoryMap.getFilePath(
       handAccessoryType,
       colorName
     );
-    layersSequence.insertOnTop(LAYERS.HandAccessory);
   }
 
-  if (makeupType === 2) {
-    layersSequence.moveAfter(LAYERS.Makeup, LAYERS.Hand);
+  if (makeupType === 2 && layersSequence.sequence.includes(LAYERS.Hand)) {
+    layersSequence.moveToTop(LAYERS.Makeup);
   }
 
   Image.generateFromLayers(

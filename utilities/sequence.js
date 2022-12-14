@@ -25,7 +25,7 @@ export class Sequence {
       this.sequence = sequenceCopy;
     } else {
       throw new Error(
-        `One or more of the provided layers (${layerName}, ${beforeLayerName}) not in the sequence`
+        `One or more of the provided layers (${layerName}, ${secondaryLayerName}) not in the sequence`
       );
     }
   }
@@ -33,12 +33,17 @@ export class Sequence {
   removeFromSequence(layerName) {
     if (this.sequence.some((key) => key === layerName)) {
       this.sequence = this.sequence.filter((key) => key !== layerName);
-    } else {
-      throw new Error(`Layer (${layerName}) is not in the sequence`);
     }
   }
 
   insertOnTop(layerName) {
     this.sequence = [...this.sequence, layerName];
+  }
+
+  moveToTop(layerName) {
+    this.sequence = this.sequence
+      .slice()
+      .filter((key) => key !== layerName)
+      .concat([layerName]);
   }
 }

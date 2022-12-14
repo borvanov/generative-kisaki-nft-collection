@@ -78,22 +78,6 @@ export const eyesBrowsMap = new ConfigurationPreset(
 );
 
 // Hair config
-export const hoodedCapeHairMap = new ConfigurationPreset(
-  {
-    1: "BRAID _ BUN",
-    2: "BUZZ",
-    3: "ELEGANT",
-    4: "EMPRESS STYLE 2",
-    5: "EMPRESS STYLE",
-    6: "LONG",
-    7: "PIGTAILS",
-    8: "SHORT",
-    9: "UPSTYLE",
-  },
-  "Hair/HAIR FOR HOODED CAPE ONLY",
-  "",
-  "__ONLY HOODED CAPE"
-);
 
 export const hairMap = new ConfigurationPreset(
   {
@@ -108,6 +92,23 @@ export const hairMap = new ConfigurationPreset(
     9: "UPSTYLE",
   },
   "Hair"
+);
+
+export const hoodedCapeHairMap = new ConfigurationPreset(
+ {
+    1: "BRAID _ BUN",
+    2: "BUZZ",
+    3: "ELEGANT",
+    4: "EMPRESS STYLE_02",
+    5: "EMPRESS STYLE",
+    6: "LONG",
+    7: "PIGTAILS",
+    8: "SHORT",
+    9: "UPSTYLE",
+  },
+  "Hair/HAIR FOR HOODED CAPE ONLY",
+  "",
+  "__ONLY HOODED CAPE"
 );
 
 // Hand accessory config
