@@ -1,20 +1,20 @@
 {
-  "name": "nft-collection-generative",
+  "name": "kisaki-nft-collection",
   "version": "1.0.0",
-  "description": "",
-  "type": "module",
+  "description": "Generative NFT collection",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "generate": "node index.js"
+    "test": "npx hardhat test --network hardhat",
+    "generate": "node ./generation/index.mjs"
   },
-  "author": "",
+  "author": "Anton Borvanov",
   "license": "ISC",
   "dependencies": {
-    "@openzeppelin/contracts": "^4.8.0",
     "canvas": "^2.10.2"
   },
   "devDependencies": {
+    "@openzeppelin/contracts": "^4.8.0",
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
     "dotenv": "^16.0.3",
     "hardhat": "^2.12.4"
   }

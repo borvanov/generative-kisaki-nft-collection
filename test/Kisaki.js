@@ -1,8 +1,4 @@
-const {
-  time,
-  loadFixture,
-} = require("@nomicfoundation/hardhat-network-helpers");
-const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
+const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 
 describe("Kisaki", function () {
@@ -19,13 +15,17 @@ describe("Kisaki", function () {
     return { owner, otherAccount, kisaki };
   }
 
-  describe("Deployment", function () {});
+  describe("Deployment", function () {
+    it("Should be deployed", async function () {
+      const { kisaki, owner } = await loadFixture(deployKisakiFixture);
+      expect(await kisaki.owner()).to.be.equal(owner.address);
+    });
+  });
 
   describe("Minting", function () {
     describe("Token creation", function () {
-      // it("Should revert with the right error if called too soon", async function () {
+      // it("Should be ", async function () {
       //   const { kisaki } = await loadFixture(deployKisakiFixture);
-
       //   await expect(lock.withdraw()).to.be.revertedWith(
       //     "You can't withdraw yet"
       //   );
@@ -37,9 +37,7 @@ describe("Kisaki", function () {
       //   const { lock, unlockTime, lockedAmount } = await loadFixture(
       //     deployOneYearLockFixture
       //   );
-
       //   await time.increaseTo(unlockTime);
-
       //   await expect(lock.withdraw())
       //     .to.emit(lock, "Withdrawal")
       //     .withArgs(lockedAmount, anyValue); // We accept any value as `when` arg
@@ -51,9 +49,7 @@ describe("Kisaki", function () {
       //   const { lock, unlockTime, lockedAmount, owner } = await loadFixture(
       //     deployOneYearLockFixture
       //   );
-
       //   await time.increaseTo(unlockTime);
-
       //   await expect(lock.withdraw()).to.changeEtherBalances(
       //     [owner, lock],
       //     [lockedAmount, -lockedAmount]

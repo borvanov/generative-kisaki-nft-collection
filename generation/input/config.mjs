@@ -1,4 +1,4 @@
-import { ConfigurationPreset } from "./configuration-preset.js";
+import { ConfigurationPreset } from "./configuration-preset.mjs";
 
 // Common colors config
 const COLORS_MAP = {

@@ -12,11 +12,11 @@ import {
   makeupMap,
   mouthMap,
   raceMap,
-} from "./input/config.js";
-import { Sequence } from "./utilities/sequence.js";
-import { Image } from "./utilities/image.js";
-import { Random } from "./utilities/random.js";
-import { Exclusions } from "./utilities/exclusions.js";
+} from "./input/config.mjs";
+import { Sequence } from "./utilities/sequence.mjs";
+import { Image } from "./utilities/image.mjs";
+import { Random } from "./utilities/random.mjs";
+import { Exclusions } from "./utilities/exclusions.mjs";
 
 const LAYERS = {
   Background: "background",
@@ -179,7 +179,7 @@ function generateNft() {
   Image.generateFromLayers(
     layersSequence.sequence
       .map((layerName) => layers[layerName])
-      .map((path) => `./input/${path}`)
+      .map((path) => `./generation/input/${path}`)
   ).then((canvas) => {
     const buffer = canvas.toBuffer("image/png");
     if (!fs.existsSync("./generated")) {
